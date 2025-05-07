@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@font-face {
+    font-family: 'Cairo';
+    src: url('@/assets/fonts/Cairo/static/Cairo-Regular.ttf') format('truetype');
+}
+
+@theme {
+    --font-cairo: Cairo, 'sans-serif';
+    --color-primary: #2c7a7b; /* Primary Green - spirituality, peace, nature */
+    --color-accent: #f6ad55; /* Accent Yellow - light, blessings, guidance */
+    --color-background: #ffffff; /* Background White - purity, clarity, simplicity */
+    --color-contrast: #2d3748; /* Deep Teal/Charcoal - for contrast elements */
+    --color-secondary: #f5f5f5; /* Keeping existing secondary color */
+}
+@layer base {
+    * {
+        @apply font-cairo;
+    }
+    body {
+        @apply bg-background;
+    }
+}
