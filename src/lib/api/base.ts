@@ -3,6 +3,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import config from '@/lib/config/api'
 import { ApiError } from '@/lib/api/helpers/ApiError'
 import { ApiFeedBackMessage } from './helpers/ApiFeedBackMessage'
+import { useFeedbackMessage } from '@/composables/useFeedbackMessage.ts'
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -43,9 +44,9 @@ api.interceptors.response.use(
         return response
     },
     async (error: AxiosError) => {
-        const originalRequest = error.config as
-            | (AxiosRequestConfig & { _retry?: number })
-            | undefined
+        // const originalRequest = error.config as
+        //     | (AxiosRequestConfig & { _retry?: number })
+        //     | undefined
 
         // Log error response
         console.error('❌ Response Error:', {
@@ -56,8 +57,13 @@ api.interceptors.response.use(
 
         //handle FeedBack Message
         if (error.response?.status === 403) {
-            const data = error.response.data as { title: string; body: string }
+            const data = error.response.data.feedback_message as { title: string; body: string }
             const feedBackMessage = new ApiFeedBackMessage(data.title, data.body)
+            const feedback =useFeedbackMessage();
+
+            feedback.triggerFeedback({ type:'warning',...feedBackMessage })
+
+
             return Promise.reject(feedBackMessage)
         }
 
@@ -69,22 +75,22 @@ api.interceptors.response.use(
             return Promise.reject(new ApiError(401, 'Unauthorized'))
         }
 
-        // Retry logic for network errors or 5xx server errors
-        if (
-            originalRequest &&
-            (error.code === 'ECONNABORTED' ||
-                (error.response?.status && error.response.status >= 500)) &&
-            (!originalRequest._retry || originalRequest._retry < config.api.retry)
-        ) {
-            originalRequest._retry = (originalRequest._retry || 0) + 1
-
-            // Wait before retrying
-            const retryCount = originalRequest._retry ?? 0
-            await new Promise((resolve) => setTimeout(resolve, config.api.retryDelay * retryCount))
-
-            // Retry the request
-            return api(originalRequest)
-        }
+        // // Retry logic for network errors or 5xx server errors
+        // if (
+        //     originalRequest &&
+        //     (error.code === 'ECONNABORTED' ||
+        //         (error.response?.status && error.response.status >= 500)) &&
+        //     (!originalRequest._retry || originalRequest._retry < config.api.retry)
+        // ) {
+        //     originalRequest._retry = (originalRequest._retry || 0) + 1
+        //
+        //     // Wait before retrying
+        //     const retryCount = originalRequest._retry ?? 0
+        //     await new Promise((resolve) => setTimeout(resolve, config.api.retryDelay * retryCount))
+        //
+        //     // Retry the request
+        //     return api(originalRequest)
+        // }
 
         // Create a custom error with more details
         const errorMessage =

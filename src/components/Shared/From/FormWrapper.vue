@@ -9,7 +9,7 @@ defineProps<Props>()
 </script>
 
 <template>
-    <div :class="['w-full space-y-6', customClass]">
+    <form :class="['w-full space-y-6', customClass]">
         <!-- Form Header -->
         <div v-if="title || description" class="space-y-2">
             <h2 v-if="title" class="text-xl font-semibold text-contrast">
@@ -29,5 +29,5 @@ defineProps<Props>()
         <div class="flex items-center justify-end gap-3 pt-4">
             <slot name="actions"></slot>
         </div>
-    </div>
+    </form>
 </template>

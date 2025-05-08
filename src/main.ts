@@ -13,7 +13,9 @@ const locale = localStorage.getItem('locale') || 'ar'
 localStorage.setItem('locale', locale)
 
 const i18n = createI18n({
+    legacy: false, // you
     locale,
+    fallbackLocale: 'ar',
     messages: { en, ar },
 })
 
