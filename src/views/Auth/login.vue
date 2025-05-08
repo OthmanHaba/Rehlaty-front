@@ -6,10 +6,6 @@ import { useI18n } from 'vue-i18n'
 import type { LoginRequest } from '@/types/Auth'
 import { authService } from '@/services/auth.ts'
 import { useRouter } from 'vue-router'
-import { Import } from 'lucide-vue-next'
-import type { ApiError } from '@/lib/api/helpers/ApiError.ts'
-import { useToast } from '@/composables/useToast.ts'
-import { useFeedbackMessage } from '@/composables/useFeedbackMessage.ts'
 
 const { t } = useI18n()
 const router = useRouter()
