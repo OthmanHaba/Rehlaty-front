@@ -5,14 +5,6 @@ import type { User } from '@/types/User'
 import { UserRepository } from '@/lib/repsitories/User'
 import type { DataTableColumn } from '@/types'
 
-const handleEdit = (row: any) => {
-    console.log(row)
-}
-
-const handleDelete = (row: any) => {
-    console.log(row)
-}
-
 const columns = ref<DataTableColumn[]>();
 const users = ref<User[]>([])
 const title = ref<string>('')
@@ -26,6 +18,15 @@ onMounted(async () => {
     title.value = response.meta.title;
     description.value = response.meta.description;
 })
+
+const handleSearch = async (value: string) => {
+    const response = await UserRepository.getUsers(value)
+
+    users.value = response.data;
+    columns.value = response.meta.columns;
+    title.value = response.meta.title;
+    description.value = response.meta.description;
+}
 </script>
 
 <template>
@@ -41,9 +42,13 @@ onMounted(async () => {
     </div>
 
     <div class="mt-4 border p-2 border-primary/10  shadow-xs bg-white dark:bg-dark-700">
-        <DataTable v-if="columns && users" :columns="columns" :data="users" />
+        <DataTable v-if="columns && users" :columns="columns" :data="users" :loading="false" has-search
+            @search="handleSearch" />
+
         <div v-else>
-            <p>No data</p>
+            <p class="text-center text-sm text-contrast/70">
+                {{ $t('common.noData') }}
+            </p>
         </div>
     </div>
 

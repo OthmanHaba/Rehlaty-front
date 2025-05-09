@@ -11,4 +11,9 @@ export default {
             signIn: 'Sign In',
         },
     },
+    common: {
+        search: 'Search',
+        filters: 'Filters',
+        noData: 'No data available',
+    },
 }

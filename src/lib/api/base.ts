@@ -1,19 +1,30 @@
 import axios, { AxiosError } from 'axios'
-import type { AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosResponse } from 'axios'
 import config from '@/lib/config/api'
 import { ApiError } from '@/lib/api/helpers/ApiError'
 import { ApiFeedBackMessage } from './helpers/ApiFeedBackMessage'
 import { useFeedbackMessage } from '@/composables/useFeedbackMessage.ts'
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: getSubdomain()
+        ? `http://${getSubdomain()}.${import.meta.env.VITE_API_URL}`
+        : import.meta.env.VITE_API_URL,
     headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
     },
     timeout: config.api.timeout,
 })
+function getSubdomain(): string | null {
+    const host = window.location.hostname // e.g., "sub.example.com"
+    const parts = host.split('.')
 
+    // if (parts.length < 3) {
+    //     return null // No subdomain present
+    // }
+
+    return parts[0] // "sub"
+}
 api.interceptors.request.use(
     (config) => {
         // Add token if available
@@ -59,10 +70,9 @@ api.interceptors.response.use(
         if (error.response?.status === 403) {
             const data = error.response.data.feedback_message as { title: string; body: string }
             const feedBackMessage = new ApiFeedBackMessage(data.title, data.body)
-            const feedback =useFeedbackMessage();
+            const feedback = useFeedbackMessage()
 
-            feedback.triggerFeedback({ type:'warning',...feedBackMessage })
-
+            feedback.triggerFeedback({ type: 'warning', ...feedBackMessage })
 
             return Promise.reject(feedBackMessage)
         }

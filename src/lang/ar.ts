@@ -20,4 +20,9 @@ export default {
             signIn: 'تسجيل الدخول',
         },
     },
+    common: {
+        search: 'بحث',
+        filters: 'التصفيات',
+        noData: 'لا يوجد بيانات',
+    },
 }
