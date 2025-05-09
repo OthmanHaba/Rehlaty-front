@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import Breadcrumb from '@/components/app/Breadcrumb.vue'
+import { useUserStore } from '@/stores/user'
+import DynamicMenu from '@/components/Shared/DynamicMenu.vue'
+const userStore = useUserStore()
+const user = userStore.user
 </script>
 
 <template>
@@ -26,12 +30,21 @@ import Breadcrumb from '@/components/app/Breadcrumb.vue'
             <!-- User Menu -->
             <div class="flex items-center gap-3">
                 <div class="text-right">
-                    <p class="text-sm font-medium text-contrast">Mohammed </p>
-                    <p class="text-xs text-gray-500">admin</p>
+                    <p class="text-sm font-medium text-contrast">{{ user?.name }}</p>
+                    <p class="text-xs text-gray-500">{{ user?.role ?? 'admin' }}</p>
                 </div>
-                <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <Icon icon="heroicons:user-circle" class="w-8 h-8 text-primary" />
-                </button>
+                <DynamicMenu>
+                    <template #trigger>
+                        <button class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                            <Icon icon="heroicons:user-circle" class="w-8 h-8 text-primary" />
+                        </button>
+                    </template>
+                    <template #content>
+                        <div class="p-2">
+                            <p>Logout</p>
+                        </div>
+                    </template>
+                </DynamicMenu>
             </div>
         </div>
     </div>

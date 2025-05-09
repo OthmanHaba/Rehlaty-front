@@ -1,7 +1,7 @@
 import Api from '@/lib/api/base.ts'
 import endpoints from '@/lib/endpoints'
+import { useUserStore } from '@/stores/user'
 import type { LoginResponse } from '@/types/Auth'
-
 export class Auth {
     private static instance: Auth
 
@@ -23,6 +23,8 @@ export class Auth {
                 .then((response) => {
                     // Store token in local storage
                     localStorage.setItem('token', response.data.token)
+                    const userStore = useUserStore()
+                    userStore.setUser(response.data.user)
                     resolve()
                 })
                 .catch((error) => {
