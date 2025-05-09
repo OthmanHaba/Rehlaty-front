@@ -16,7 +16,7 @@ export class Auth {
 
     public async login(username: string, password: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            Api.post<LoginResponse>(endpoints.LOGIN, {
+            Api.post<LoginResponse>(endpoints.LOGIN(), {
                 username,
                 password,
             })
