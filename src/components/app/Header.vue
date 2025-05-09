@@ -3,8 +3,15 @@ import { Icon } from '@iconify/vue';
 import Breadcrumb from '@/components/app/Breadcrumb.vue'
 import { useUserStore } from '@/stores/user'
 import DynamicMenu from '@/components/Shared/DynamicMenu.vue'
+import Button from '@/components/Shared/Button.vue'
 const userStore = useUserStore()
 const user = userStore.user
+
+
+const logout = () => {
+    userStore.logout()
+}
+
 </script>
 
 <template>
@@ -39,9 +46,11 @@ const user = userStore.user
                             <Icon icon="heroicons:user-circle" class="w-8 h-8 text-primary" />
                         </button>
                     </template>
+
                     <template #content>
-                        <div class="p-2">
-                            <p>Logout</p>
+                        <div class="pt-2">
+                            <Button full-width variant="danger" @click="logout"
+                                icon="heroicons:arrow-right-on-rectangle" label="Logout" />
                         </div>
                     </template>
                 </DynamicMenu>
