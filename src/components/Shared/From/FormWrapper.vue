@@ -12,10 +12,10 @@ defineProps<Props>()
     <form :class="['w-full space-y-6', customClass]">
         <!-- Form Header -->
         <div v-if="title || description" class="space-y-2">
-            <h2 v-if="title" class="text-xl font-semibold text-contrast">
+            <h2 v-if="title" class="text-xl font-semibold text-contrast text-end">
                 {{ title }}
             </h2>
-            <p v-if="description" class="text-sm text-contrast/70">
+            <p v-if="description" class="text-sm text-contrast/70 text-end">
                 {{ description }}
             </p>
         </div>
