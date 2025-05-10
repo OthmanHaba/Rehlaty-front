@@ -4,6 +4,7 @@ import config from '@/lib/config/api'
 import { ApiError } from '@/lib/api/helpers/ApiError'
 import { ApiFeedBackMessage } from './helpers/ApiFeedBackMessage'
 import { useFeedbackMessage } from '@/composables/useFeedbackMessage.ts'
+import { useI18n } from 'vue-i18n'
 
 const api = axios.create({
     baseURL: getSubdomain()
@@ -66,10 +67,15 @@ api.interceptors.response.use(
             data: error.response?.data,
         })
 
+        // const { t } = useI18n()
         //handle FeedBack Message
         if (error.response?.status === 403) {
             const data = error.response.data.feedback_message as { title: string; body: string }
-            const feedBackMessage = new ApiFeedBackMessage(data.title, data.body)
+            const feedBackMessage = new ApiFeedBackMessage(
+                data.title,
+                data.body,
+                // ?? t('app.error.server_error')
+            )
             const feedback = useFeedbackMessage()
 
             feedback.triggerFeedback({ type: 'warning', ...feedBackMessage })

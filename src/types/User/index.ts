@@ -3,8 +3,9 @@ export interface User {
     name: string
     username: string
     email: string
-    createdAt: string
-    updatedAt: string
+    password?: string
+    createdAt?: string
+    updatedAt?: string
     role?: Role
     permissions?: Permission[]
 }

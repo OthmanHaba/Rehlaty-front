@@ -8,6 +8,7 @@ interface DropdownItem {
     label: string;
     value: string | number;
     icon?: string;
+    selected_id_or_value?: string | number;
 }
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
     triggerIcon?: string;
     position?: 'start' | 'end';
     dir?: 'ltr' | 'rtl';
+    label?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,7 +39,7 @@ const emit = defineEmits<{
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
 const selectedItem = computed(() =>
-    props.items.find(item => item.value === props.modelValue)
+    props.items.find(item => item.selected_id_or_value === props.modelValue || item.id === props.modelValue)
 );
 
 const toggleDropdown = () => {
@@ -47,7 +49,8 @@ const toggleDropdown = () => {
 };
 
 const selectItem = (item: DropdownItem) => {
-    emit('update:modelValue', item.value);
+    const valueToEmit = item.selected_id_or_value || item.id;
+    emit('update:modelValue', valueToEmit);
     emit('select', item);
     isOpen.value = false;
 };
@@ -60,6 +63,7 @@ onClickOutside(dropdownRef, () => {
 
 <template>
     <div ref="dropdownRef" class="relative" :dir="dir">
+        <label v-if="label" class="block mb-2 text-sm font-medium text-gray-700 text-end">{{ label }}</label>
         <button @click="toggleDropdown" :disabled="disabled"
             class="flex items-center justify-between w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             :class="[
@@ -90,14 +94,14 @@ onClickOutside(dropdownRef, () => {
                     <button v-for="item in items" :key="item.id" @click="selectItem(item)"
                         class="flex items-center w-full px-4 py-2.5 text-sm hover:bg-gray-50 focus:outline-none transition-colors duration-150"
                         :class="{
-                            'bg-blue-50 text-blue-600': item.value === modelValue,
-                            'text-gray-700': item.value !== modelValue
+                            'bg-blue-50 text-blue-600': (item.selected_id_or_value === modelValue || item.id === modelValue),
+                            'text-gray-700': (item.selected_id_or_value !== modelValue && item.id !== modelValue)
                         }">
                         <span v-if="item.icon" :class="[
                             dir === 'rtl' ? 'ml-2' : 'mr-2'
                         ]">
                             <Icon :icon="item.icon" class="w-5 h-5"
-                                :class="{ 'text-blue-500': item.value === modelValue }" />
+                                :class="{ 'text-blue-500': (item.selected_id_or_value === modelValue || item.id === modelValue) }" />
                         </span>
                         <span class="flex-1 text-start">{{ item.label }}</span>
                     </button>

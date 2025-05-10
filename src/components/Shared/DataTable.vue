@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue'
 
 interface DataTableProps {
     columns: DataTableColumn[]
+    //TODO make the input add generac
     data: Record<string, string | number | boolean>[]
     loading?: boolean
     hasSearch?: boolean

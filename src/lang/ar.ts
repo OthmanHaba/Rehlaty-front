@@ -9,13 +9,16 @@ export default {
             users: 'المستخدمين',
             roles: 'الصلاحيات',
         },
+        error: {
+            server_error: 'حدث خطآ في الخادم',
+        },
     },
     auth: {
         login: {
             title: 'مرحباً بعودتك',
             description: 'رحلتي: بوابتك لتسهيل اجرائات العمرة',
             email_or_username: ' البريد الإلكتروني او اسم المستخدم',
-            emailPlaceholder: 'أدخل بريدك الإلكتروني',
+            emailPlaceholder: ' أدخل بريدك الإلكتروني او اسم المستخدم',
             password: 'كلمة المرور',
             passwordPlaceholder: 'أدخل كلمة المرور',
             signIn: 'تسجيل الدخول',
@@ -43,5 +46,11 @@ export default {
     role: {
         name: 'اسم الصلاحية',
         permissions: 'الصلاحيات',
+    },
+    user: {
+        name: 'الاسم',
+        username: 'اسم المستخدم',
+        email: 'البريد الإلكتروني',
+        password: 'كلمة المرور',
     },
 }

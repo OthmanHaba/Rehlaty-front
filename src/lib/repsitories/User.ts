@@ -1,7 +1,17 @@
 import { endpoints } from '@/lib/endpoints'
 import Api from '@/lib/api/base'
-import type { Permission, User } from '@/types/User'
+import type { User } from '@/types/User'
 import type { Response, Meta } from '@/types'
+
+interface UserRequest {
+    id?: number
+    name: string
+    username: string
+    email: string
+    password: string
+    password_confirmation: string
+    role: string
+}
 
 export const UserRepository = {
     getUsers: async (search?: string) => {
@@ -14,6 +24,16 @@ export const UserRepository = {
     },
     getUser: async (id: string) => {
         const response = await Api.get(endpoints.USER(id))
+        return response.data
+    },
+
+    createUser: async (data: UserRequest) => {
+        const response = await Api.post(endpoints.USERS(), data)
+        return response.data
+    },
+
+    updateUser: async (id: string, data: UserRequest) => {
+        const response = await Api.put(endpoints.USER(id), data)
         return response.data
     },
 }
