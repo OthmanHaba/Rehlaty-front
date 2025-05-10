@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DataTable from '@/components/Shared/DataTable.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, toRefs } from 'vue'
 import type { User, Role } from '@/types/User'
 import { UserRepository } from '@/lib/repsitories/User'
 import type { DataTableColumn } from '@/types'
@@ -10,6 +10,7 @@ import FormWrapper from '@/components/Shared/From/FormWrapper.vue'
 import FormInput from '@/components/Shared/From/FormInput.vue'
 import { RoleRepository } from '@/lib/repsitories/Role'
 import DropDown from '@/components/Shared/DropDown.vue'
+import { useValidationStore } from '@/composables/useValidationErrors'
 
 
 interface DropdownItem {
@@ -18,6 +19,8 @@ interface DropdownItem {
     value: number;
     icon?: string;
 }
+
+const validationErrors = useValidationStore()
 
 const columns = ref<DataTableColumn[]>();
 const users = ref<User[]>([])
@@ -85,6 +88,7 @@ const formData = ref<UserRequest>({
 
 const openModal = (user: UserRequest | null) => {
     isModalOpen.value = true
+    console.log(user)
     formData.value = user || {
         id: 0,
         name: '',
@@ -94,15 +98,37 @@ const openModal = (user: UserRequest | null) => {
         password_confirmation: '',
         role: '',
     }
+
 }
 
+const resetForm = () => {
+    formData.value = {
+        id: 0,
+        name: '',
+        username: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        role: '',
+    }
+}
 const handleSubmit = async () => {
-    if (formData.value.id) {
-        const response = await UserRepository.updateUser(formData.value.id.toString(), formData.value)
-        console.log(response)
-    } else {
-        const response = await UserRepository.createUser(formData.value)
-        console.log(response)
+    try {
+        const isUpdate = formData.value.id && formData.value.id > 0
+
+        if (isUpdate) {
+            await UserRepository.updateUser(formData.value.id.toString(), formData.value)
+        } else {
+            await UserRepository.createUser(formData.value)
+        }
+
+        validationErrors.clearErrors()
+        isModalOpen.value = false
+        await getUsers()
+        resetForm()
+    } catch (error) {
+        // Validation errors are handled by the API interceptor
+        console.error('Error submitting form:', error)
     }
 }
 </script>
@@ -120,20 +146,27 @@ const handleSubmit = async () => {
                 <Button @click="openModal(null)" icon="mdi:plus" variant="primary" :label="$t('common.add')" />
             </div>
 
+
             <Modal no-footer v-model="isModalOpen" @close="isModalOpen = false" :title="$t('common.add')"
                 :description="$t('common.add')">
-                <FormWrapper @submit.prevent="handleSubmit" :title="$t('common.add')" :description="$t('common.add')">
-                    <FormInput :label="$t('user.name')" v-model="formData.name" />
-                    <FormInput :label="$t('user.username')" v-model="formData.username" />
-                    <FormInput :label="$t('user.email')" v-model="formData.email" />
-                    <FormInput :label="$t('user.password')" v-model="formData.password" type="password" />
-                    <FormInput :label="$t('user.password_confirmation')" v-model="formData.password_confirmation"
-                        type="password" />
 
-                    <DropDown v-model="formData.role" :label="$t('user.role')" :items="roleOptions" />
+                <FormWrapper @submit.prevent="handleSubmit" :title="$t('common.add')" :description="$t('common.add')">
+                    <FormInput :label="$t('user.name')" v-model="formData.name"
+                        :error="validationErrors.getErrors('name')?.[0] || ''" />
+                    <FormInput :label="$t('user.username')" v-model="formData.username"
+                        :error="validationErrors.getErrors('username')?.[0] || ''" />
+                    <FormInput :label="$t('user.email')" v-model="formData.email"
+                        :error="validationErrors.getErrors('email')?.[0] || ''" />
+                    <FormInput :label="$t('user.password')" v-model="formData.password" type="password"
+                        :error="validationErrors.getErrors('password')?.[0] || ''" />
+                    <FormInput :label="$t('user.password_confirmation')" v-model="formData.password_confirmation"
+                        type="password" :error="validationErrors.getErrors('password')?.[0] || ''" />
+
+                    <DropDown v-model="formData.role" :label="$t('user.role')" :items="roleOptions"
+                        :error="validationErrors.getErrors('role')?.[0] || ''" />
 
                     <template #actions>
-                        <Button @click="handleSubmit" icon="mdi:plus" variant="primary" :label="$t('common.add')" />
+                        <Button type="submit" icon="mdi:plus" variant="primary" :label="$t('common.add')" />
                     </template>
                 </FormWrapper>
             </Modal>
@@ -143,15 +176,15 @@ const handleSubmit = async () => {
     <div class="mt-4 border p-2 border-primary/10  shadow-xs bg-white dark:bg-dark-700">
         <DataTable v-if="columns && users" :columns="columns" :data="users" :loading="false" has-search
             @search="handleSearch" :appends="[{ key: 'actions', label: 'actions', slot: 'actions' }]">
-            <template #role="row">
-                {{ row.role?.name }}
+            <template #role="{ row }">
+                <span class="px-2 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
+                    {{ row.role?.name }}
+                </span>
             </template>
 
-            <template #actions="row">
+            <template #actions="{ row }">
                 <div class="flex gap-2">
-                    <button class="btn btn-primary">
-                        {{ $t('common.edit') }}
-                    </button>
+                    <Button @click="openModal(row)" icon="mdi:pencil" variant="primary" />
                 </div>
             </template>
 

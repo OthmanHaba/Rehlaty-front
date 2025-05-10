@@ -64,7 +64,7 @@ onClickOutside(dropdownRef, () => {
 <template>
     <div ref="dropdownRef" class="relative" :dir="dir">
         <label v-if="label" class="block mb-2 text-sm font-medium text-gray-700 text-end">{{ label }}</label>
-        <button @click="toggleDropdown" :disabled="disabled"
+        <button type="button" @click="toggleDropdown" :disabled="disabled"
             class="flex items-center justify-between w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             :class="[
                 disabled ? 'bg-gray-100 cursor-not-allowed text-gray-400' : 'bg-white hover:bg-gray-50 text-gray-700',
@@ -91,7 +91,7 @@ onClickOutside(dropdownRef, () => {
                 class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
                 :class="[position === 'end' ? 'end-0' : 'start-0']">
                 <div class="py-1">
-                    <button v-for="item in items" :key="item.id" @click="selectItem(item)"
+                    <button type="button" v-for="item in items" :key="item.id" @click="selectItem(item)"
                         class="flex items-center w-full px-4 py-2.5 text-sm hover:bg-gray-50 focus:outline-none transition-colors duration-150"
                         :class="{
                             'bg-blue-50 text-blue-600': (item.selected_id_or_value === modelValue || item.id === modelValue),

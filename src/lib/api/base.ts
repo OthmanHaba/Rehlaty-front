@@ -5,6 +5,7 @@ import { ApiError } from '@/lib/api/helpers/ApiError'
 import { ApiFeedBackMessage } from './helpers/ApiFeedBackMessage'
 import { useFeedbackMessage } from '@/composables/useFeedbackMessage.ts'
 import { useI18n } from 'vue-i18n'
+import { useValidationStore } from '@/composables/useValidationErrors'
 
 const api = axios.create({
     baseURL: getSubdomain()
@@ -91,6 +92,16 @@ api.interceptors.response.use(
             return Promise.reject(new ApiError(401, 'Unauthorized'))
         }
 
+        if (error.response?.status === 422) {
+            const data = error.response.data.errors
+
+            const validationErrors = useValidationStore()
+            validationErrors.setErrors(data)
+
+            console.log(validationErrors.errors.value)
+
+            return Promise.reject(validationErrors)
+        }
         // // Retry logic for network errors or 5xx server errors
         // if (
         //     originalRequest &&
