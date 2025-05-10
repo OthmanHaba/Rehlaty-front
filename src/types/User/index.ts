@@ -5,7 +5,17 @@ export interface User {
     email: string
     createdAt: string
     updatedAt: string
-    // avatar?: string
-    // role?: string
-    // permissions?: Permission[]
+    role?: Role
+    permissions?: Permission[]
+}
+
+export interface Role {
+    id?: number
+    name: string
+    permissions: Permission[]
+}
+
+export interface Permission {
+    id?: number
+    name: string
 }

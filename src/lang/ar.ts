@@ -7,6 +7,7 @@ export default {
             clients: 'العملاء',
             settings: 'الإعدادات',
             users: 'المستخدمين',
+            roles: 'الصلاحيات',
         },
     },
     auth: {

@@ -24,6 +24,12 @@ const pages: Page[] = [
         link: '/users',
         title: t('app.pages.users'),
     },
+    {
+        icon: 'mdi:users',
+        name: 'Roles',
+        link: '/roles',
+        title: t('app.pages.roles'),
+    },
 ]
 
 const router = useRouter()

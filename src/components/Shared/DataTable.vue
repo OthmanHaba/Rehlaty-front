@@ -118,8 +118,12 @@ watch(searchQuery, (newValue) => {
                     </tr>
                 </tbody>
             </table>
-            <div v-if="props.data.length === 0" class="text-center py-8 text-gray-500 bg-white">
-                {{ $t('common.noData') }}
+            <div v-if="props.data.length === 0" class="text-center py-12 bg-white">
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <Icon icon="solar:database-bold" class="h-16 w-16 text-gray-300" />
+                    <h3 class="text-lg font-medium text-gray-900">{{ $t('common.noData') }}</h3>
+                    <p class="text-sm text-gray-500">{{ $t('common.noDataDescription') }}</p>
+                </div>
             </div>
         </div>
     </div>

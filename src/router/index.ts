@@ -25,6 +25,10 @@ const router = createRouter({
                     path: 'users',
                     component: () => import('@/views/User/index.vue'),
                 },
+                {
+                    path: 'roles',
+                    component: () => import('@/views/Role/index.vue'),
+                },
             ],
         },
     ],
