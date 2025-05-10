@@ -73,7 +73,7 @@ const sizeClasses = {
                         sizeClasses[size]
                     ]" role="dialog" aria-modal="true" @click.stop>
                         <!-- Header -->
-                        <div class="flex items-center justify-between p-4 border-b border-secondary">
+                        <div class="flex items-center justify-between p-4 border-b border-secondary flex-row-reverse">
                             <h3 class="text-lg font-semibold text-contrast">
                                 {{ title }}
                             </h3>
