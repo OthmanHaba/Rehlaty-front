@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 interface Props {
     modelValue: string | number
     label?: string
@@ -25,11 +26,14 @@ const emit = defineEmits<{
 }>()
 
 const inputId = `input-${Math.random().toString(36).substr(2, 9)}`
+const { locale } = useI18n()
 </script>
 
 <template>
     <div :class="['flex flex-col gap-2 w-full', customClass]">
-        <label v-if="label" :for="inputId" class="text-sm font-medium text-contrast">
+        <label v-if="label" :for="inputId" class="text-sm font-medium text-contrast" :class="{
+            'text-right': locale === 'ar'
+        }">
             {{ label }}
             <span v-if="required" class="text-red-500 ml-1">*</span>
         </label>
@@ -37,6 +41,7 @@ const inputId = `input-${Math.random().toString(36).substr(2, 9)}`
         <input :id="inputId" :type="type" :value="modelValue" :placeholder="placeholder" :name="name"
             :required="required" :disabled="disabled" :autocomplete="autocomplete" :min="min" :max="max" :step="step"
             :pattern="pattern" :class="[
+                locale === 'ar' ? 'text-right' : '',
                 'w-full px-3 py-2.5 text-sm rounded-md border transition-all duration-200',
                 'focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/10',
                 'disabled:bg-secondary disabled:cursor-not-allowed disabled:opacity-70',

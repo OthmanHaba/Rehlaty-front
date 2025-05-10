@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DataTableColumn } from '@/types'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { Icon } from '@iconify/vue'
 
 interface DataTableProps {
@@ -9,6 +9,7 @@ interface DataTableProps {
     loading?: boolean
     hasSearch?: boolean
     hasFilter?: boolean
+    appends?: { key: string; label: string; slot?: string }[]
 }
 
 const props = withDefaults(defineProps<DataTableProps>(), {
@@ -51,6 +52,10 @@ const clearSearch = () => {
 // Watch for search query changes
 watch(searchQuery, (newValue) => {
     handleSearch(newValue)
+})
+
+const columns = computed(() => {
+    return props.columns.concat(props.appends || [])
 })
 </script>
 
@@ -98,7 +103,7 @@ watch(searchQuery, (newValue) => {
             <table class="w-full border-collapse bg-white">
                 <thead>
                     <tr class="bg-gray-100">
-                        <th v-for="column in props.columns" :key="column.key"
+                        <th v-for="column in columns" :key="column.key"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors duration-200">
                             <div class="flex items-center gap-2">
                                 {{ column.label }}
@@ -109,7 +114,7 @@ watch(searchQuery, (newValue) => {
                 <tbody class="divide-y divide-gray-200">
                     <tr v-for="(row, index) in props.data" :key="index"
                         class="hover:bg-gray-50 transition-colors duration-200">
-                        <td v-for="column in props.columns" :key="column.key"
+                        <td v-for="column in columns" :key="column.key"
                             class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             <slot :name="column.slot" :row="row" :value="row[column.key]">
                                 {{ row[column.key] }}

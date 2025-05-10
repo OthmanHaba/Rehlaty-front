@@ -8,6 +8,7 @@ interface Props {
     showClose?: boolean;
     persistent?: boolean;
     closeOnBackdrop?: boolean;
+    noFooter?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -16,7 +17,8 @@ const props = withDefaults(defineProps<Props>(), {
     size: 'md',
     showClose: true,
     persistent: false,
-    closeOnBackdrop: true
+    closeOnBackdrop: true,
+    noFooter: false
 });
 
 const emit = defineEmits<{
@@ -85,7 +87,7 @@ const sizeClasses = {
 
                         <!-- Footer -->
                         <div class="flex items-center justify-end gap-2 p-4 border-t border-secondary">
-                            <slot name="footer">
+                            <slot name="footer" v-if="!noFooter">
                                 <Button variant="primary" @click="closeModal" :label="$t('common.confirm')" />
                             </slot>
                         </div>

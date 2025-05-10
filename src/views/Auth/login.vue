@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import type { LoginRequest } from '@/types/Auth'
 import { authService } from '@/services/auth.ts'
 import { useRouter } from 'vue-router'
+// import type { ApiError } from '@/lib/api/helpers/ApiError'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -25,7 +26,7 @@ const handleSubmit = async () => {
     try {
         await authService.login(data.value)
         await router.push('/')
-    } catch (err: ApiError) {
+    } catch (err: any) {
         errors.value.username = err.data.errors.username
         errors.value.password = err.data.errors.password
     }
@@ -44,36 +45,19 @@ const handleSubmit = async () => {
         <!-- Right side - Login Form -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
             <div class="w-full max-w-md">
-                <FormWrapper
-                    @submit.prevent="handleSubmit"
-                    :title="t('auth.login.title')"
-                    :description="t('auth.login.description')"
-                >
-                    <FormInput
-                        v-model="data.username"
-                        type="text"
-                        :label="t('auth.login.email_or_username')"
-                        :placeholder="t('auth.login.emailPlaceholder')"
-                        :error="errors.username[0]"
-                        required
-                        autocomplete="email"
-                    />
+                <FormWrapper @submit.prevent="handleSubmit" :title="t('auth.login.title')"
+                    :description="t('auth.login.description')">
+                    <FormInput v-model="data.username" type="text" :label="t('auth.login.email_or_username')"
+                        :placeholder="t('auth.login.emailPlaceholder')" :error="errors.username[0]" required
+                        autocomplete="email" />
 
-                    <FormInput
-                        v-model="data.password"
-                        type="password"
-                        :label="t('auth.login.password')"
-                        :placeholder="t('auth.login.passwordPlaceholder')"
-                        :error="errors.password[0]"
-                        required
-                        autocomplete="current-password"
-                    />
+                    <FormInput v-model="data.password" type="password" :label="t('auth.login.password')"
+                        :placeholder="t('auth.login.passwordPlaceholder')" :error="errors.password[0]" required
+                        autocomplete="current-password" />
 
                     <template #actions>
-                        <button
-                            type="submit"
-                            class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
-                        >
+                        <button type="submit"
+                            class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
                             {{ t('auth.login.signIn') }}
                         </button>
                     </template>

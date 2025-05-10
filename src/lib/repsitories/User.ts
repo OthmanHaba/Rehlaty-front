@@ -1,6 +1,6 @@
 import { endpoints } from '@/lib/endpoints'
 import Api from '@/lib/api/base'
-import type { User } from '@/types/User'
+import type { Permission, User } from '@/types/User'
 import type { Response, Meta } from '@/types'
 
 export const UserRepository = {
