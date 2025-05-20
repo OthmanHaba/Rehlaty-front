@@ -8,7 +8,7 @@ import Header from '@/components/app/Header.vue'
         <Sidebar />
         <div class="flex-1 bg-white ">
             <Header />
-            <!-- TODO here will be the content of the application -->
+
             <div class="p-4">
                 <RouterView />
             </div>

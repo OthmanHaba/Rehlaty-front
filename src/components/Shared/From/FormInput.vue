@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+//todo add icons support with rtl and ltr icon with prefixed and suffix
 interface Props {
     modelValue: string | number
     label?: string

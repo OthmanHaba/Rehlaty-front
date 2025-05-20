@@ -8,6 +8,7 @@ export default {
             settings: 'الإعدادات',
             users: 'المستخدمين',
             roles: 'الصلاحيات',
+            activities : 'سجل الانشطة'
         },
         error: {
             server_error: 'حدث خطآ في الخادم',
@@ -42,6 +43,7 @@ export default {
         success: 'نجاح',
         info: 'معلومة',
         noDataDescription: 'لا يوجد بيانات',
+        activities : 'سجل الانشطة'
     },
     role: {
         name: 'اسم الصلاحية',

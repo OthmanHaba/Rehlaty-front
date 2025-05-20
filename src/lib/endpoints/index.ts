@@ -7,8 +7,7 @@ export const endpoints = {
     PERMISSIONS: () => '/permissions',
     ROLES: () => '/roles',
     ROLE: (id: string | number) => `/roles/${id}`,
-    DASHBOARD: () => '/dashboard',
-    SETTINGS: () => '/settings',
+    ACTIVITIES: () => '/activities',
 } as const
 
 export default endpoints

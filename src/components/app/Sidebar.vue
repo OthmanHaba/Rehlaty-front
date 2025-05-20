@@ -30,6 +30,12 @@ const pages: Page[] = [
         link: '/roles',
         title: t('app.pages.roles'),
     },
+    {
+        icon: 'tabler:logs',
+        name: 'activities',
+        link: '/activities',
+        title: t('app.pages.activities'),
+    },
 ]
 
 const router = useRouter()

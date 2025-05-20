@@ -147,7 +147,7 @@ const handleSubmit = async () => {
             </div>
 
 
-            <Modal no-footer v-model="isModalOpen" @close="isModalOpen = false" :title="$t('common.add')"
+            <Modal size="xl" no-footer v-model="isModalOpen" @close="isModalOpen = false" :title="$t('common.add')"
                 :description="$t('common.add')">
 
                 <FormWrapper @submit.prevent="handleSubmit" :title="$t('common.add')" :description="$t('common.add')">

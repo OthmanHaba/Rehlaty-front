@@ -21,9 +21,6 @@ function getSubdomain(): string | null {
     const host = window.location.hostname // e.g., "sub.example.com"
     const parts = host.split('.')
 
-    // if (parts.length < 3) {
-    //     return null // No subdomain present
-    // }
 
     return parts[0] // "sub"
 }

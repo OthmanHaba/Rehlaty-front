@@ -22,4 +22,17 @@ interface Meta {
     columns: DataTableColumn[]
 }
 
-export type { Modal, DataTableColumn, Response, Meta }
+interface Activity {
+    id: number;
+    log_name: string;
+    description: string;
+    subject: Array<object>|object;
+    causer: Array<object>|object;
+    event: string;
+    properties: Array<object>|object;
+}
+interface Record<T> {
+    [key: string]: T
+}
+
+export type { Modal, DataTableColumn, Response, Meta, Record , Activity}

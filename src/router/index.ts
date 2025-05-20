@@ -29,6 +29,10 @@ const router = createRouter({
                     path: 'roles',
                     component: () => import('@/views/Role/index.vue'),
                 },
+                {
+                    path: 'activities',
+                    component: () => import('@/views/Activity/index.vue'),
+                },
             ],
         },
     ],
