@@ -8,6 +8,8 @@ export const endpoints = {
     ROLES: () => '/roles',
     ROLE: (id: string | number) => `/roles/${id}`,
     ACTIVITIES: () => '/activities',
+    GROUPS: () => '/groups',
+    GROUP: (id: string | number) => `/groups/${id}`,
 } as const
 
 export default endpoints

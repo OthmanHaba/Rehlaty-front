@@ -35,4 +35,22 @@ interface Record<T> {
     [key: string]: T
 }
 
-export type { Modal, DataTableColumn, Response, Meta, Record , Activity}
+interface Group {
+    id?: number
+    name: string
+    description?: string
+    customers? : Customers[]
+    created_at?: string
+    updated_at?: string
+}
+interface Customers {
+    id: number,
+    name: string
+    phone: string
+    created_at: string
+    updated_at: string
+    group? : Group
+}
+
+
+export type { Modal, DataTableColumn, Response, Meta, Record , Activity, Group}

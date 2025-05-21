@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useI18n } from 'vue-i18n'
 
@@ -36,10 +36,31 @@ const pages: Page[] = [
         link: '/activities',
         title: t('app.pages.activities'),
     },
+    {
+        icon: 'mingcute:group-3-line',
+        name: 'groups',
+        link: '/groups',
+        title: t('app.pages.groups'),
+    },
 ]
 
-const router = useRouter()
+const router = useRouter();
+const route = useRoute();
+
 const goTo = (link: string) => router.push(link)
+
+function isRouteSelected(buttonPath: string): boolean {
+    const normalize = (path: string) => path.replace(/\/+$/, '');
+
+    const current = normalize(route.path);
+    const button = normalize(buttonPath);
+
+    if (button === '' || button === '/') {
+        return current === '';
+    }
+
+    return current === button || current.startsWith(button + '/');
+}
 </script>
 
 <template>
@@ -54,7 +75,7 @@ const goTo = (link: string) => router.push(link)
                     <div class="border border-gray-200 border-solid rounded-md">
                         <button
                             class="flex items-centerborder-solid w-full px-3 py-2 rounded-md hover:bg-primary transition-colors text-gray-700 gap-3 hover:text-white"
-                            :class="{ 'border-l-4 border-primary ': page.link === $route.path }"
+                            :class="{ 'border-l-4 border-primary ': isRouteSelected(page.link) }"
                             @click="goTo(page.link)">
                             <Icon v-if="page.icon" :icon="page.icon" class="w-5 h-5" />
                             <span>{{ page.title }}</span>

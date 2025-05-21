@@ -53,15 +53,6 @@ onMounted(async () => {
                 </div>
             </template>
 
-<!--            <template #properties="{ row }">-->
-<!--                <div class="flex gap-2">-->
-<!--                    <span class="px-2 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">-->
-<!--                        {{ row. }}-->
-<!--                    </span>-->
-<!--                </div>-->
-<!--            </template>-->
-
-
         </DataTable>
 
         <div v-else>

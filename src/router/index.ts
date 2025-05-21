@@ -33,6 +33,14 @@ const router = createRouter({
                     path: 'activities',
                     component: () => import('@/views/Activity/index.vue'),
                 },
+                {
+                    path: 'groups',
+                    component: () => import('@/views/Group/index.vue'),
+                },
+                {
+                    path: 'groups/create',
+                    component: () => import('@/views/Group/create.vue'),
+                }
             ],
         },
     ],
