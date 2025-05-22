@@ -4,7 +4,6 @@ import config from '@/lib/config/api'
 import { ApiError } from '@/lib/api/helpers/ApiError'
 import { ApiFeedBackMessage } from './helpers/ApiFeedBackMessage'
 import { useFeedbackMessage } from '@/composables/useFeedbackMessage.ts'
-import { useI18n } from 'vue-i18n'
 import { useValidationStore } from '@/composables/useValidationErrors'
 
 const api = axios.create({

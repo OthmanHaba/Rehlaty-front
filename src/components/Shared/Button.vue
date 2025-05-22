@@ -13,7 +13,7 @@
     ]" :disabled="disabled || loading" @click="$emit('click', $event)">
         <Icon v-if="loading" icon="mdi:loading" class="animate-spin" :width="20" :height="20" />
         <Icon v-else-if="icon" :icon="icon" :width="20" :height="20" />
-        <span v-if="label">{{ label }}</span>
+        <span v-show="label">{{ label }}</span>
         <slot></slot>
     </button>
 </template>

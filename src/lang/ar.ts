@@ -34,6 +34,7 @@ export default {
         noData: 'لا يوجد بيانات',
         name: 'الاسم',
         permissions: 'الصلاحيات',
+        actions: 'الاجراءات',
         add: 'إضافة',
         edit: 'تعديل',
         delete: 'حذف',
