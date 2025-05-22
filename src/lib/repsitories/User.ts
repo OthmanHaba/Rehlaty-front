@@ -15,12 +15,11 @@ interface UserRequest {
 
 export const UserRepository = {
     getUsers: async (search?: string) => {
-        const response = await Api.get<Response<User[], Meta>>(endpoints.USERS(), {
+        return  await Api.get<Response<User[], Meta>>(endpoints.USERS(), {
             params: {
                 search: search ?? '',
             },
-        })
-        return response.data
+        });
     },
     getUser: async (id: string) => {
         const response = await Api.get(endpoints.USER(id))

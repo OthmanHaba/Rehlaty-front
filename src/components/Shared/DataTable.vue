@@ -66,21 +66,32 @@ const columns = computed(() => {
             <!-- Search Input -->
             <div class="flex-1 relative" v-if="hasSearch">
                 <div class="relative w-1/3" dir="rtl">
-                    <button v-if="searchQuery" @click="clearSearch"
-                        class="absolute inset-y-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" :class="{
+                    <button
+                        v-if="searchQuery"
+                        @click="clearSearch"
+                        class="absolute inset-y-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                        :class="{
                             'left-1': $i18n.locale === 'ar',
                             'right-1': $i18n.locale === 'en',
-                        }">
+                        }"
+                    >
                         <Icon icon="solar:close-circle-bold" class="h-5 w-5" />
                     </button>
 
-                    <input v-model="searchQuery" type="text" :placeholder="$t('common.search')"
-                        class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        :placeholder="$t('common.search')"
+                        class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
 
-                    <div :class="{
-                        'right-1': $i18n.locale === 'ar',
-                        'left-1': $i18n.locale === 'en',
-                    }" class="absolute inset-y-0  pl-3 flex items-center pointer-events-none">
+                    <div
+                        :class="{
+                            'right-1': $i18n.locale === 'ar',
+                            'left-1': $i18n.locale === 'en',
+                        }"
+                        class="absolute inset-y-0 pl-3 flex items-center pointer-events-none"
+                    >
                         <Icon icon="solar:card-search-bold" class="h-5 w-5 text-gray-400" />
                     </div>
                 </div>
@@ -92,7 +103,11 @@ const columns = computed(() => {
                     <Icon icon="solar:filter-bold" class="h-5 w-5 text-gray-500" />
                     <span class="text-sm text-gray-600">{{ $t('common.filters') }}</span>
                 </div>
-                <slot name="filters" :handle-filter-change="handleFilterChange" :active-filters="activeFilters">
+                <slot
+                    name="filters"
+                    :handle-filter-change="handleFilterChange"
+                    :active-filters="activeFilters"
+                >
                     <!-- Default filter slot content -->
                     <div class="flex items-center gap-2">
                         <slot name="default-filters" />
@@ -107,12 +122,15 @@ const columns = computed(() => {
         </div>
 
         <!-- Table -->
-        <div v-else class="overflow-x-scroll max-w-7xl mx-auto rounded-lg shadow">
+        <div v-else class="overflow-x-scroll mx-auto rounded-lg shadow w-full ring">
             <table class="w-full border-collapse bg-white">
                 <thead>
                     <tr class="bg-gray-100">
-                        <th v-for="column in columns" :key="column.key"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+                        <th
+                            v-for="column in columns"
+                            :key="column.key"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors duration-200"
+                        >
                             <div class="flex items-center gap-2">
                                 {{ column.label }}
                             </div>
@@ -120,10 +138,16 @@ const columns = computed(() => {
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    <tr v-for="(row, index) in props.data" :key="index"
-                        class="hover:bg-gray-50 transition-colors duration-200">
-                        <td v-for="column in columns" :key="column.key"
-                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <tr
+                        v-for="(row, index) in props.data"
+                        :key="index"
+                        class="hover:bg-gray-50 transition-colors duration-200"
+                    >
+                        <td
+                            v-for="column in columns"
+                            :key="column.key"
+                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        >
                             <slot :name="column.slot" :row="row" :value="row[column.key]">
                                 {{ row[column.key] }}
                             </slot>
