@@ -21,7 +21,7 @@ export const UserRepository = {
             },
         });
     },
-    getUser: async (id: string) => {
+    getUser: async (id: number) => {
         const response = await Api.get(endpoints.USER(id))
         return response.data
     },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DataTable from '@/components/Shared/DataTable.vue'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { UserRepository } from '@/lib/repsitories/User'
 import Modal from '@/components/Shared/Modal.vue'
 import Button from '@/components/Shared/Button.vue'
@@ -18,7 +18,7 @@ interface DropdownItem {
     icon?: string
 }
 
-const { data, isLoading, isError, error, refetch } = useQuery({
+const { data, isLoading, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: () => UserRepository.getUsers(search.value),
 })
@@ -124,69 +124,28 @@ const handleSubmit = () => mutate.mutate(formData.value)
                 {{ $t('app.common.description', { description: 'users' }) }}
             </p>
             <div class="flex justify-end">
-                <Button
-                    @click="openModal(null)"
-                    icon="mdi:plus"
-                    variant="primary"
-                    :label="$t('common.add')"
-                />
+                <Button @click="openModal(null)" icon="mdi:plus" variant="primary" :label="$t('common.add')" />
             </div>
 
-            <Modal
-                size="xl"
-                no-footer
-                v-model="isModalOpen"
-                @close="isModalOpen = false"
-                :title="$t('common.add')"
-                :description="$t('common.add')"
-            >
-                <FormWrapper
-                    @submit.prevent="handleSubmit"
-                    :title="$t('common.add')"
-                    :description="$t('common.add')"
-                >
-                    <FormInput
-                        :label="$t('user.name')"
-                        v-model="formData.name"
-                        :error="validationErrors.getErrors('name')?.[0] || ''"
-                    />
-                    <FormInput
-                        :label="$t('user.username')"
-                        v-model="formData.username"
-                        :error="validationErrors.getErrors('username')?.[0] || ''"
-                    />
-                    <FormInput
-                        :label="$t('user.email')"
-                        v-model="formData.email"
-                        :error="validationErrors.getErrors('email')?.[0] || ''"
-                    />
-                    <FormInput
-                        :label="$t('user.password')"
-                        v-model="formData.password"
-                        type="password"
-                        :error="validationErrors.getErrors('password')?.[0] || ''"
-                    />
-                    <FormInput
-                        :label="$t('user.password_confirmation')"
-                        v-model="formData.password_confirmation"
-                        type="password"
-                        :error="validationErrors.getErrors('password')?.[0] || ''"
-                    />
+            <Modal size="xl" no-footer v-model="isModalOpen" @close="isModalOpen = false" :title="$t('common.add')"
+                :description="$t('common.add')">
+                <FormWrapper @submit.prevent="handleSubmit" :title="$t('common.add')" :description="$t('common.add')">
+                    <FormInput :label="$t('user.name')" v-model="formData.name"
+                        :error="validationErrors.getErrors('name')?.[0] || ''" />
+                    <FormInput :label="$t('user.username')" v-model="formData.username"
+                        :error="validationErrors.getErrors('username')?.[0] || ''" />
+                    <FormInput :label="$t('user.email')" v-model="formData.email"
+                        :error="validationErrors.getErrors('email')?.[0] || ''" />
+                    <FormInput :label="$t('user.password')" v-model="formData.password" type="password"
+                        :error="validationErrors.getErrors('password')?.[0] || ''" />
+                    <FormInput :label="$t('user.password_confirmation')" v-model="formData.password_confirmation"
+                        type="password" :error="validationErrors.getErrors('password')?.[0] || ''" />
 
-                    <DropDown
-                        v-model="formData.role"
-                        :label="$t('user.role')"
-                        :items="roleOptions"
-                        :error="validationErrors.getErrors('role')?.[0] || ''"
-                    />
+                    <DropDown v-model="formData.role" :label="$t('user.role')" :items="roleOptions"
+                        :error="validationErrors.getErrors('role')?.[0] || ''" />
 
                     <template #actions>
-                        <Button
-                            type="submit"
-                            icon="mdi:plus"
-                            variant="primary"
-                            :label="$t('common.add')"
-                        />
+                        <Button type="submit" icon="mdi:plus" variant="primary" :label="$t('common.add')" />
                     </template>
                 </FormWrapper>
             </Modal>
@@ -194,14 +153,8 @@ const handleSubmit = () => mutate.mutate(formData.value)
     </div>
 
     <div class="mt-4 border p-2 border-primary/10 shadow-xs bg-white dark:bg-dark-700">
-        <DataTable
-            :columns="data?.data.meta?.columns ?? []"
-            :data="data?.data.data ?? []"
-            :loading="isLoading"
-            has-search
-            @search="handleSearch"
-            :appends="[{ key: 'actions', label: 'actions', slot: 'actions' }]"
-        >
+        <DataTable :columns="data?.data.meta?.columns ?? []" :data="data?.data.data ?? []" :loading="isLoading"
+            has-search @search="handleSearch" :appends="[{ key: 'actions', label: 'actions', slot: 'actions' }]">
             <template #role="{ row }">
                 <span class="px-2 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
                     {{ row.role?.name }}
