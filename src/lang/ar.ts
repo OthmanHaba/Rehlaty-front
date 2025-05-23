@@ -8,10 +8,10 @@ export default {
             settings: 'الإعدادات',
             users: 'المستخدمين',
             roles: 'الصلاحيات',
-            activities : 'سجل الانشطة',
+            activities: 'سجل الانشطة',
             groups: 'المجموعات',
-            create : 'اضافة',
-            edit : 'تعديل',
+            create: 'اضافة',
+            edit: 'تعديل',
         },
         error: {
             server_error: 'حدث خطآ في الخادم',
@@ -47,7 +47,9 @@ export default {
         success: 'نجاح',
         info: 'معلومة',
         noDataDescription: 'لا يوجد بيانات',
-        activities : 'سجل الانشطة'
+        activities: 'سجل الانشطة',
+        error_occurred: 'حدث خطأ',
+        try_again: 'حاول مرة أخرى',
     },
     role: {
         name: 'اسم الصلاحية',
@@ -61,10 +63,10 @@ export default {
         password_confirmation: 'تأكيد كلمة المرور',
         role: 'الصلاحية',
     },
-    group :{
-        add : "اضافة مجموعة",
-        edit : "تعديل مجموعة :name",
-        name : "اسم المجموعة",
-        description : "وصف المجموعة",
-    }
+    group: {
+        add: 'اضافة مجموعة',
+        edit: 'تعديل مجموعة :name',
+        name: 'اسم المجموعة',
+        description: 'وصف المجموعة',
+    },
 }

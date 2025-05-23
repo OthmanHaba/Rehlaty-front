@@ -1,17 +1,25 @@
 <script setup lang="ts">
 import DataTable from '@/components/Shared/DataTable.vue'
-import { ref, onMounted, computed } from 'vue'
-import type { Group } from '@/types'
+import { ref, computed } from 'vue'
 import { GroupRepository } from '@/lib/repsitories/Group'
-import type { DataTableColumn } from '@/types'
 import Button from '@/components/Shared/Button.vue'
 import { useI18n } from 'vue-i18n'
+import { useQuery } from '@tanstack/vue-query'
 
-const columns = ref<DataTableColumn[]>()
-const groups = ref<Group[]>([])
-const title = ref<string>('')
-const description = ref<string>('')
-const {t} = useI18n()
+const search = ref<string>('')
+const { t } = useI18n()
+
+const { data, isLoading, refetch } = useQuery({
+    queryKey: ['groups', search],
+    queryFn: () => GroupRepository.fetchAll({
+        search: search.value
+    })
+})
+
+const groups = computed(() => data.value?.data || [])
+const columns = computed(() => data.value?.meta?.columns || [])
+const title = computed(() => data.value?.meta?.title || '')
+const description = computed(() => data.value?.meta?.description || '')
 
 const appends = [
     {
@@ -21,26 +29,9 @@ const appends = [
     },
 ]
 
-onMounted(async () => {
-    await GroupRepository.fetchAll()
-        .then((res) => {
-            groups.value = res.data
-            columns.value = res.meta.columns
-            title.value = res.meta.title
-            description.value = res.meta.description
-        })
-        .catch((e) => {
-            console.error('Error fetching groups:', e)
-        })
-})
-
-const handleSearch = async (value: string) => {
-    const response = await GroupRepository.fetchAll({
-        search: value,
-    })
-
-    groups.value = response.data
-    columns.value = response.meta.columns
+const handleSearch = (value: string) => {
+    search.value = value
+    refetch()
 }
 </script>
 
@@ -63,18 +54,11 @@ const handleSearch = async (value: string) => {
     </div>
 
     <div class="mt-4 border p-2 border-primary/10 shadow-xs bg-white dark:bg-dark-700">
-        <DataTable
-            v-if="columns && groups"
-            :columns="columns"
-            :data="groups"
-            :loading="false"
-            has-search
-            @search="handleSearch"
-            :appends="appends"
-        >
+        <DataTable :columns="columns" :data="groups as any[]" :loading="isLoading" has-search @search="handleSearch"
+            :appends="appends">
             <template #role="{ row }">
                 <span class="px-2 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
-                    {{ row.role?.name }}
+                    {{ row.role?.name || '' }}
                 </span>
             </template>
 
@@ -84,11 +68,5 @@ const handleSearch = async (value: string) => {
                 </router-link>
             </template>
         </DataTable>
-
-        <div v-else>
-            <p class="text-center text-sm text-contrast/70">
-                {{ $t('common.noData') }}
-            </p>
-        </div>
     </div>
 </template>

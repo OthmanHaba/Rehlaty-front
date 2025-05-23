@@ -1,28 +1,67 @@
 <script lang="ts" setup>
 import { RoleRepository } from '@/lib/repsitories/Role';
-import type { DataTableColumn } from '@/types';
-import type { Role } from '@/types/User';
-import { onMounted, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import Button from '@/components/Shared/Button.vue';
 import Modal from '@/components/Shared/Modal.vue';
 import FormWrapper from '@/components/Shared/From/FormWrapper.vue';
 import FormInput from '@/components/Shared/From/FormInput.vue';
 import DataTable from '@/components/Shared/DataTable.vue';
 import CheckBox from '@/components/Shared/CheckBox.vue';
-import type { Permission } from '@/types/User';
+import type { Permission, Role } from '@/types/User';
+import { useQuery, useMutation } from '@tanstack/vue-query';
 
-const title = ref<string>('')
-const description = ref<string>('')
-const columns = ref<DataTableColumn[]>()
-const roles = ref<Role[]>()
 const isModalOpen = ref<boolean>(false)
-const permissions = ref<Permission[]>([]);
+const search = ref<string>('')
 
 const formData = ref<Role>({
     id: 0,
     name: '',
     permissions: []
 });
+
+// Fetch roles with search parameter
+const {
+    data: rolesData,
+    isLoading: isRolesLoading,
+    refetch: refetchRoles
+} = useQuery({
+    queryKey: ['roles', search],
+    queryFn: () => RoleRepository.getRoles(search.value)
+});
+
+// Fetch permissions
+const { data: permissionsData } = useQuery({
+    queryKey: ['permissions'],
+    queryFn: () => RoleRepository.getPermissions()
+});
+
+// Create or update role mutation
+const roleMutation = useMutation({
+    mutationFn: (roleData: Role) => {
+        if (roleData.id) {
+            return RoleRepository.updateRole({
+                id: roleData.id,
+                name: roleData.name,
+                permissions: roleData.permissions?.map((p) => p.id) || []
+            });
+        } else {
+            return RoleRepository.createRole({
+                name: roleData.name,
+                permissions: roleData.permissions?.map((p) => p.id) || []
+            });
+        }
+    },
+    onSuccess: () => {
+        isModalOpen.value = false;
+        refetchRoles();
+    }
+});
+
+const roles = computed(() => rolesData.value?.data || []);
+const columns = computed(() => rolesData.value?.meta?.columns || []);
+const title = computed(() => rolesData.value?.meta?.title || '');
+const description = computed(() => rolesData.value?.meta?.description || '');
+const permissions = computed(() => permissionsData.value?.data || []);
 
 const selectedPermissionIds = computed({
     get: () => formData.value.permissions?.map(p => p.id) || [],
@@ -31,73 +70,31 @@ const selectedPermissionIds = computed({
     }
 });
 
-const handleSearch = async (value: string) => {
-    const response = await RoleRepository.getRoles(value)
-    roles.value = response.data
-    columns.value = response.meta.columns
-    title.value = response.meta.title
-    description.value = response.meta.description
+const handleSearch = (value: string) => {
+    search.value = value;
+    refetchRoles();
 }
 
-const getPermissions = async () => {
-    const response = await RoleRepository.getPermissions()
-    permissions.value = response.data
-}
-
-const getRoles = async () => {
-    const response = await RoleRepository.getRoles()
-    roles.value = response.data
-    columns.value = response.meta.columns
-    title.value = response.meta.title
-    description.value = response.meta.description
-}
-
-const handleSubmit = async () => {
-    try {
-
-        if (formData.value.id) {
-            await RoleRepository.updateRole({
-                id: formData.value.id,
-                name: formData.value.name,
-                permissions: formData.value.permissions?.map((p: Permission) => p.id) || []
-            })
-        } else {
-            await RoleRepository.createRole({
-                name: formData.value.name,
-                permissions: selectedPermissionIds.value
-            })
-        }
-        isModalOpen.value = false
-        await getRoles()
-    } catch (error) {
-        console.log(error)
-    }
+const handleSubmit = () => {
+    roleMutation.mutate(formData.value);
 }
 
 const openModal = (value: Role | null) => {
-
     if (value) {
         formData.value = {
             id: value.id,
             name: value.name,
+            permissions: value.permissions
         }
-
-        selectedPermissionIds.value = value?.permissions?.map((p: Permission) => p.id) || []
-
-        console.log(value.permissions)
-
-        formData.value.permissions = value.permissions
+    } else {
+        formData.value = {
+            id: 0,
+            name: '',
+            permissions: []
+        }
     }
-    isModalOpen.value = true
-
-    console.log(selectedPermissionIds.value)
-    console.log(formData.value)
+    isModalOpen.value = true;
 }
-
-onMounted(async () => {
-    await getPermissions()
-    await getRoles()
-})
 </script>
 
 <template>
@@ -139,11 +136,11 @@ onMounted(async () => {
     </div>
 
     <div class="mt-4 border p-2 border-primary/10  shadow-xs bg-white dark:bg-dark-700">
-        <DataTable v-if="columns && roles" :columns="columns"
-            :data="roles as unknown as Record<string, string | number | boolean>[]" :loading="false" has-search
-            @search="handleSearch" :appends="[{ key: 'actions', label: 'Actions', slot: 'actions' }]">
+        <DataTable v-if="columns.length && roles.length" :columns="columns" :data="roles as any[]"
+            :loading="isRolesLoading" has-search @search="handleSearch"
+            :appends="[{ key: 'actions', label: 'Actions', slot: 'actions' }]">
             <template #actions="{ row }">
-                <Button @click="openModal(row)" icon="mdi:pencil" variant="secondary" />
+                <Button @click="openModal(row as Role)" icon="mdi:pencil" variant="secondary" />
             </template>
 
             <template #permissions="{ row }">

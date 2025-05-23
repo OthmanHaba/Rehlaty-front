@@ -10,6 +10,7 @@ import DropDown from '@/components/Shared/DropDown.vue'
 import { useValidationStore } from '@/composables/useValidationErrors'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { RoleRepository } from '@/lib/repsitories/Role.ts'
+import type { User } from '@/types/User'
 
 interface DropdownItem {
     id: number
@@ -18,16 +19,28 @@ interface DropdownItem {
     icon?: string
 }
 
+const search = ref<string>('')
+
 const { data, isLoading, refetch } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['users', search],
     queryFn: () => UserRepository.getUsers(search.value),
 })
+
+interface UserRequest {
+    id?: number
+    name: string
+    username: string
+    email: string
+    password: string
+    password_confirmation: string
+    role: string
+}
 
 const mutate = useMutation({
     mutationKey: ['users'],
     mutationFn: (user: UserRequest) => {
         if (user.id) {
-            return UserRepository.updateUser(user.id, user)
+            return UserRepository.updateUser(String(user.id), user)
         } else {
             return UserRepository.createUser(user)
         }
@@ -45,16 +58,6 @@ const rolesRep = useQuery({
 
 const validationErrors = useValidationStore()
 
-interface UserRequest {
-    id?: number
-    name: string
-    username: string
-    email: string
-    password: string
-    password_confirmation: string
-    role: string
-}
-
 const roleOptions = computed(() => {
     if (!rolesRep.data.value) {
         return []
@@ -67,30 +70,33 @@ const roleOptions = computed(() => {
     })) as DropdownItem[]
 })
 
-const search = ref<string>('')
 
 const isModalOpen = ref(false)
-const formData = ref<UserRequest>({
+const formData = ref<Partial<UserRequest>>({
     id: 0,
     name: '',
     username: '',
     email: '',
-    password: '',
-    password_confirmation: '',
+    password: undefined,
+    password_confirmation: undefined,
     role: '',
 })
 
-const openModal = (user: UserRequest | null) => {
+const openModal = (user: User | null) => {
     isModalOpen.value = true
     console.log(user)
-    formData.value = user || {
-        id: 0,
-        name: '',
-        username: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-        role: '',
+    if (user) {
+        formData.value = {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            email: user.email,
+            password: undefined,
+            password_confirmation: undefined,
+            role: user.role?.id.toString() || '',
+        }
+    } else {
+        resetForm()
     }
 }
 
@@ -157,13 +163,13 @@ const handleSubmit = () => mutate.mutate(formData.value)
             has-search @search="handleSearch" :appends="[{ key: 'actions', label: 'actions', slot: 'actions' }]">
             <template #role="{ row }">
                 <span class="px-2 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
-                    {{ row.role?.name }}
+                    {{ row.role?.name || '' }}
                 </span>
             </template>
 
             <template #actions="{ row }">
                 <div class="flex gap-2">
-                    <Button @click="openModal(row)" icon="mdi:pencil" variant="primary" />
+                    <Button @click="openModal(row as unknown as User)" icon="mdi:pencil" variant="primary" />
                 </div>
             </template>
         </DataTable>

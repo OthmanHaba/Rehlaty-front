@@ -20,7 +20,6 @@ function getSubdomain(): string | null {
     const host = window.location.hostname // e.g., "sub.example.com"
     const parts = host.split('.')
 
-
     return parts[0] // "sub"
 }
 api.interceptors.request.use(

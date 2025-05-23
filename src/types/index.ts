@@ -22,14 +22,20 @@ interface Meta {
     columns: DataTableColumn[]
 }
 
+interface Causer {
+    id: number
+    name: string
+    [key: string]: unknown
+}
+
 interface Activity {
-    id: number;
-    log_name: string;
-    description: string;
-    subject: Array<object>|object;
-    causer: Array<object>|object;
-    event: string;
-    properties: Array<object>|object;
+    id: number
+    log_name: string
+    description: string
+    subject: Array<object> | object
+    causer: Causer | null
+    event: string
+    properties: Array<object> | object
 }
 interface Record<T> {
     [key: string]: T
@@ -39,18 +45,17 @@ interface Group {
     id?: number
     name: string
     description?: string
-    customers? : Customers[]
+    customers?: Customers[]
     created_at?: string
     updated_at?: string
 }
 interface Customers {
-    id: number,
+    id: number
     name: string
     phone: string
     created_at: string
     updated_at: string
-    group? : Group
+    group?: Group
 }
 
-
-export type { Modal, DataTableColumn, Response, Meta, Record , Activity, Group}
+export type { Modal, DataTableColumn, Response, Meta, Record, Activity, Group, Causer }
