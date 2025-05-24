@@ -11,6 +11,11 @@ import { useValidationStore } from '@/composables/useValidationErrors'
 import { useMutation, useQuery } from '@tanstack/vue-query'
 import { RoleRepository } from '@/lib/repsitories/Role.ts'
 import type { User } from '@/types/User'
+import { useToast } from '@/composables/useToast'
+import type { ApiError } from '@/lib/api/helpers/ApiError'
+import Pagination from '@/components/Shared/Pagination.vue'
+
+const { error } = useToast();
 
 interface DropdownItem {
     id: number
@@ -49,11 +54,18 @@ const mutate = useMutation({
         refetch()
         isModalOpen.value = false
     },
+    onError: (_error: ApiError) => {
+        error(_error.message ?? 'Failed to create user')
+    }
 })
 
+const page = ref(1);
+
 const rolesRep = useQuery({
-    queryKey: ['roles'],
+    queryKey: ['roles', search],
     queryFn: () => RoleRepository.getRoles(),
+
+
 })
 
 const validationErrors = useValidationStore()
@@ -118,6 +130,11 @@ const handleSearch = (_search: string) => {
 }
 
 const handleSubmit = () => mutate.mutate(formData.value)
+
+const handlePageChange = (_page: number) => {
+    page.value = _page
+    refetch()
+}
 </script>
 
 <template>
@@ -173,5 +190,8 @@ const handleSubmit = () => mutate.mutate(formData.value)
                 </div>
             </template>
         </DataTable>
+
+        <Pagination v-if="!isLoading && data?.data.meta" :pagination="data.data.meta" @page-change="handlePageChange" />
+
     </div>
 </template>

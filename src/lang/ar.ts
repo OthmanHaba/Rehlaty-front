@@ -69,4 +69,8 @@ export default {
         name: 'اسم المجموعة',
         description: 'وصف المجموعة',
     },
+    pagination: {
+        previous: 'السابق',
+        next: 'التالي',
+    },
 }

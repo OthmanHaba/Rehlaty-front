@@ -5,22 +5,63 @@ import { GroupRepository } from '@/lib/repsitories/Group'
 import Button from '@/components/Shared/Button.vue'
 import { useI18n } from 'vue-i18n'
 import { useQuery } from '@tanstack/vue-query'
+import Pagination from '@/components/Shared/Pagination.vue'
+import type { Role } from '@/types/User'
+import type { Meta } from '@/types'
+
+// Define interface for extended Group with role
+interface GroupWithRole {
+    id?: number
+    name: string
+    description?: string
+    customers?: unknown[]
+    created_at?: string
+    updated_at?: string
+    role?: Role | string
+    [key: string]: unknown
+}
+
+// Extend the Meta interface to include pagination
+interface ExtendedMeta extends Meta {
+    pagination?: LaravelPaginationData
+}
+
+interface LaravelPaginationData {
+    current_page: number
+    data: Record<string, unknown>[]
+    first_page_url: string
+    from: number
+    last_page: number
+    last_page_url: string
+    links: {
+        url: string | null
+        label: string
+        active: boolean
+    }[]
+    next_page_url: string | null
+    path: string
+    per_page: number
+    prev_page_url: string | null
+    to: number
+    total: number
+}
 
 const search = ref<string>('')
 const { t } = useI18n()
-
+const page = ref(1)
 const { data, isLoading, refetch } = useQuery({
     queryKey: ['groups', search],
     queryFn: () => GroupRepository.fetchAll({
-        search: search.value
+        search: search.value,
+        per_page: 10,
+        page: page.value
     })
 })
 
-const groups = computed(() => data.value?.data || [])
+const groups = computed(() => (data.value?.data || []) as GroupWithRole[])
 const columns = computed(() => data.value?.meta?.columns || [])
 const title = computed(() => data.value?.meta?.title || '')
 const description = computed(() => data.value?.meta?.description || '')
-
 const appends = [
     {
         key: 'actions',
@@ -31,6 +72,11 @@ const appends = [
 
 const handleSearch = (value: string) => {
     search.value = value
+    refetch()
+}
+
+const handlePageChange = (_page: number) => {
+    page.value = _page
     refetch()
 }
 </script>
@@ -54,11 +100,12 @@ const handleSearch = (value: string) => {
     </div>
 
     <div class="mt-4 border p-2 border-primary/10 shadow-xs bg-white dark:bg-dark-700">
-        <DataTable :columns="columns" :data="groups as any[]" :loading="isLoading" has-search @search="handleSearch"
+        <DataTable :columns="columns" :data="groups" :loading="isLoading" has-search @search="handleSearch"
             :appends="appends">
+
             <template #role="{ row }">
                 <span class="px-2 py-1 text-sm rounded-full bg-primary/10 text-primary font-medium">
-                    {{ row.role?.name || '' }}
+                    {{ typeof row.role === 'object' && row.role ? (row.role as Role).name || '' : row.role || '' }}
                 </span>
             </template>
 
@@ -68,5 +115,7 @@ const handleSearch = (value: string) => {
                 </router-link>
             </template>
         </DataTable>
+
+        <Pagination v-if="!isLoading" :pagination="data?.meta" @page-change="handlePageChange" />
     </div>
 </template>

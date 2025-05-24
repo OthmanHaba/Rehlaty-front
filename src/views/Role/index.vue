@@ -7,11 +7,15 @@ import FormWrapper from '@/components/Shared/From/FormWrapper.vue';
 import FormInput from '@/components/Shared/From/FormInput.vue';
 import DataTable from '@/components/Shared/DataTable.vue';
 import CheckBox from '@/components/Shared/CheckBox.vue';
-import type { Permission, Role } from '@/types/User';
+import type { Role } from '@/types/User';
 import { useQuery, useMutation } from '@tanstack/vue-query';
+import { useToast } from '@/composables/useToast';
+import type { ApiError } from '@/lib/api/helpers/ApiError';
 
 const isModalOpen = ref<boolean>(false)
 const search = ref<string>('')
+
+const { error } = useToast();
 
 const formData = ref<Role>({
     id: 0,
@@ -35,6 +39,8 @@ const { data: permissionsData } = useQuery({
     queryFn: () => RoleRepository.getPermissions()
 });
 
+const isCheckAll = ref<boolean>(false);
+
 // Create or update role mutation
 const roleMutation = useMutation({
     mutationFn: (roleData: Role) => {
@@ -54,6 +60,9 @@ const roleMutation = useMutation({
     onSuccess: () => {
         isModalOpen.value = false;
         refetchRoles();
+    },
+    onError: (_error: ApiError) => {
+        error(_error.message ?? 'Failed to create role')
     }
 });
 
@@ -69,6 +78,14 @@ const selectedPermissionIds = computed({
         formData.value.permissions = permissions.value.filter(p => value.includes(p.id));
     }
 });
+
+const handleCheckAll = () => {
+    if (isCheckAll.value) {
+        selectedPermissionIds.value = permissions.value.map(p => p.id);
+    } else {
+        selectedPermissionIds.value = [];
+    }
+}
 
 const handleSearch = (value: string) => {
     search.value = value;
@@ -115,6 +132,16 @@ const openModal = (value: Role | null) => {
                 <FormWrapper @submit.prevent="handleSubmit">
                     <FormInput :label="$t('role.name')" v-model="formData.name" />
 
+                    <div>
+                        <CheckBox v-model="isCheckAll" :label="$t('role.allPermissions')" :disabled="false"
+                            :label-class="''" @change="handleCheckAll">
+                            <template #label>
+                                <span class="text-sm text-contrast/70">
+                                    {{ $t('role.allPermissions') }}
+                                </span>
+                            </template>
+                        </CheckBox>
+                    </div>
                     <div class="space-y-2 grid grid-cols-2 gap-2">
                         <CheckBox v-for="permission in permissions" :key="permission.id" v-model="selectedPermissionIds"
                             :value="permission.id" :multiple="true" :label="permission.name" :disabled="false"
@@ -128,7 +155,7 @@ const openModal = (value: Role | null) => {
                         </CheckBox>
                     </div>
                     <template #actions>
-                        <Button @click="handleSubmit" icon="mdi:plus" variant="primary" :label="$t('common.add')" />
+                        <Button icon="mdi:plus" variant="primary" :label="$t('common.add')" />
                     </template>
                 </FormWrapper>
             </Modal>
@@ -136,8 +163,7 @@ const openModal = (value: Role | null) => {
     </div>
 
     <div class="mt-4 border p-2 border-primary/10  shadow-xs bg-white dark:bg-dark-700">
-        <DataTable v-if="columns.length && roles.length" :columns="columns" :data="roles as any[]"
-            :loading="isRolesLoading" has-search @search="handleSearch"
+        <DataTable :columns="columns" :data="roles as any[]" :loading="isRolesLoading" has-search @search="handleSearch"
             :appends="[{ key: 'actions', label: 'Actions', slot: 'actions' }]">
             <template #actions="{ row }">
                 <Button @click="openModal(row as Role)" icon="mdi:pencil" variant="secondary" />
@@ -152,11 +178,5 @@ const openModal = (value: Role | null) => {
                 </div>
             </template>
         </DataTable>
-
-        <div v-else>
-            <p class="text-center text-sm text-contrast/70">
-                {{ $t('common.noData') }}
-            </p>
-        </div>
     </div>
 </template>

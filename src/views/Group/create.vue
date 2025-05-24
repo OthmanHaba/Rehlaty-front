@@ -7,6 +7,8 @@ import { useMutation } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import Api from '@/lib/api/base.ts'
 import endpoints from '@/lib/endpoints'
+import type { ApiError } from '@/lib/api/helpers/ApiError'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 
@@ -14,6 +16,8 @@ const form = ref<Group>({
     name: '',
     description: '',
 })
+
+const { error } = useToast();
 
 // Since GroupRepository doesn't have a create method, we'll implement it directly
 const createGroupMutation = useMutation({
@@ -23,6 +27,9 @@ const createGroupMutation = useMutation({
     },
     onSuccess: () => {
         router.push('/groups')
+    },
+    onError: (_error: ApiError) => {
+        error(_error.message)
     }
 })
 
