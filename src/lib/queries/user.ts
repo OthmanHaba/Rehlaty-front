@@ -1,16 +1,9 @@
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { UserRepository } from '@/lib/repsitories/User'
 import { RoleRepository } from '@/lib/repsitories/Role'
+import type { UserRequest } from '@/types/user'
 
-interface UserRequest {
-    id?: number
-    name: string
-    username: string
-    email: string
-    password: string
-    password_confirmation: string
-    role: string
-}
+
 
 export function useUserQuery(search: string) {
   return useQuery({
