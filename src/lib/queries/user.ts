@@ -2,6 +2,7 @@ import { useQuery, useMutation } from '@tanstack/vue-query'
 import { UserRepository } from '@/lib/repsitories/User'
 import { RoleRepository } from '@/lib/repsitories/Role'
 import type { UserRequest } from '@/types/user'
+import type { ApiError } from '@/lib/api/helpers/ApiError'
 
 
 
@@ -12,7 +13,7 @@ export function useUserQuery(search: string) {
   })
 }
 
-export function useUserMutation(onSuccess: () => void, onError: (error: any) => void)
+export function useUserMutation(onSuccess: () => void, onError: (error: ApiError) => void)
  {
   return useMutation({
     mutationKey: ['users'],
