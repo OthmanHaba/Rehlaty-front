@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import DataTable from '@/components/Shared/DataTable.vue'
 import { ref, computed } from 'vue'
-import { UserRepository } from '@/lib/repsitories/User'
+// import { UserRepository } from '@/lib/repsitories/User'
 import Modal from '@/components/Shared/Modal.vue'
 import Button from '@/components/Shared/Button.vue'
 import FormWrapper from '@/components/Shared/From/FormWrapper.vue'
 import FormInput from '@/components/Shared/From/FormInput.vue'
 import DropDown from '@/components/Shared/DropDown.vue'
 import { useValidationStore } from '@/composables/useValidationErrors'
-import { useMutation, useQuery } from '@tanstack/vue-query'
-import { RoleRepository } from '@/lib/repsitories/Role.ts'
+// import { useMutation, useQuery } from '@tanstack/vue-query'
+import { useUserQuery, useUserMutation, useRoleQuery} from '@/lib/queries/user'
+
+import type { UserRequest } from '@/types/UserRequest'
+
+// import { RoleRepository } from '@/lib/repsitories/Role.ts'
 import type { User } from '@/types/User'
 import { useToast } from '@/composables/useToast'
 import type { ApiError } from '@/lib/api/helpers/ApiError'
 import Pagination from '@/components/Shared/Pagination.vue'
 
-const { error } = useToast();
+const { error } = useToast()
 
 interface DropdownItem {
     id: number
@@ -26,10 +30,12 @@ interface DropdownItem {
 
 const search = ref<string>('')
 
-const { data, isLoading, refetch } = useQuery({
-    queryKey: ['users', search],
-    queryFn: () => UserRepository.getUsers(search.value),
-})
+// const { data, isLoading, refetch } = useQuery({
+//     queryKey: ['users', search],
+//     queryFn: () => UserRepository.getUsers(search.value),
+// })
+const { data, isLoading, refetch } = useUserQuery(search.value)
+
 
 interface UserRequest {
     id?: number
@@ -41,32 +47,43 @@ interface UserRequest {
     role: string
 }
 
-const mutate = useMutation({
-    mutationKey: ['users'],
-    mutationFn: (user: UserRequest) => {
-        if (user.id) {
-            return UserRepository.updateUser(String(user.id), user)
-        } else {
-            return UserRepository.createUser(user)
-        }
-    },
-    onSuccess: () => {
+// const mutate = useMutation({
+//     mutationKey: ['users'],
+//     mutationFn: (user: UserRequest) => {
+//         if (user.id) {
+//             return UserRepository.updateUser(String(user.id), user)
+//         } else {
+//             return UserRepository.createUser(user)
+//         }
+//     },
+//     onSuccess: () => {
+//         refetch()
+//         isModalOpen.value = false
+//     },
+//     onError: (_error: ApiError) => {
+//         error(_error.message ?? 'Failed to create user')
+//     }
+// })
+    const mutate = useUserMutation(
+    () => {
         refetch()
         isModalOpen.value = false
     },
-    onError: (_error: ApiError) => {
-        error(_error.message ?? 'Failed to create user')
+    (apiError: ApiError) => {
+        error(apiError.message ?? 'Failed to create user')
     }
-})
+    )
 
 const page = ref(1);
 
-const rolesRep = useQuery({
-    queryKey: ['roles', search],
-    queryFn: () => RoleRepository.getRoles(),
+// const rolesRep = useQuery({
+//     queryKey: ['roles', search],
+//     queryFn: () => RoleRepository.getRoles(),
 
 
-})
+// })
+    const rolesRep = useRoleQuery()
+
 
 const validationErrors = useValidationStore()
 
