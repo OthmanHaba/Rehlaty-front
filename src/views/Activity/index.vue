@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import DataTable from '@/components/Shared/DataTable.vue'
 import { ref, computed } from 'vue'
-import { ActivityRepository } from '@/lib/repsitories/Activity.ts'
-import { useQuery } from '@tanstack/vue-query'
+import { useActivityQuery } from '@/lib/queries/activity'
 
 const search = ref<string>('')
 
-const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['activities', search],
-    queryFn: () => ActivityRepository.fetchAll(),
-    retry: 1
-})
+const { data, isLoading, error, refetch } = useActivityQuery(search.value)
 
 const activities = computed(() => data.value?.data || [])
 const columns = computed(() => data.value?.meta?.columns || [])
