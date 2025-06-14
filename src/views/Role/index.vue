@@ -7,7 +7,8 @@ import FormInput from '@/components/Shared/From/FormInput.vue';
 import DataTable from '@/components/Shared/DataTable.vue';
 import CheckBox from '@/components/Shared/CheckBox.vue';
 import type { Role } from '@/types/User/index';
-import { useRoleQuery, usePermissionQuery, useRoleMutation } from '@/lib/queries/role'
+import { usePermissionQuery, useRoleMutation } from '@/lib/queries/role'
+import { useRoleQuery} from '@/lib/queries/user'
 import { useToast } from '@/composables/useToast';
 import type { ApiError } from '@/lib/api/helpers/ApiError';
 

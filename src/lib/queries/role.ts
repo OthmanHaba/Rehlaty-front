@@ -2,14 +2,6 @@ import { RoleRepository } from '@/lib/repsitories/Role';
 import { useQuery, useMutation } from '@tanstack/vue-query';
 import type { ApiError } from '@/lib/api/helpers/ApiError'
 import type { Role } from '@/types/User/index'
-import type { Ref } from 'vue';
-
-export function useRoleQuery(search: Ref<string>) {
-  return useQuery({
-    queryKey: ['roles', search],
-    queryFn: () => RoleRepository.getRoles(search.value),
-  })
-}
 
 export function usePermissionQuery() {
   return useQuery({

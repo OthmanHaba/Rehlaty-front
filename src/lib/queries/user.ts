@@ -30,9 +30,9 @@ export function useUserMutation(onSuccess: () => void, onError: (error: ApiError
   })
 }
 
-export function useRoleQuery() {
+export function useRoleQuery(search: Ref<string>) {
   return useQuery({
-    queryKey: ['roles'],
-    queryFn: () => RoleRepository.getRoles(),
+    queryKey: ['roles', search],
+    queryFn: () => RoleRepository.getRoles(search.value),
   })
 }
