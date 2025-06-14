@@ -27,7 +27,7 @@ const {
     data: rolesData,
     isLoading: isRolesLoading,
     refetch: refetchRoles
-      } = useRoleQuery(search.value)
+      } = useRoleQuery(search)
 
 // Fetch permissions
 const { data: permissionsData } = usePermissionQuery()

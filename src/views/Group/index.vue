@@ -5,7 +5,7 @@ import Button from '@/components/Shared/Button.vue'
 import { useI18n } from 'vue-i18n'
 import { useGroupQuery } from '@/lib/queries/group'
 import Pagination from '@/components/Shared/Pagination.vue'
-import type { Role } from '@/types/User'
+import type { Role } from '@/types/User/index'
 import type { Meta } from '@/types'
 
 // Define interface for extended Group with role
@@ -49,7 +49,7 @@ const search = ref<string>('')
 const { t } = useI18n()
 const page = ref(1)
 
-const { data, isLoading, refetch } = useGroupQuery(search.value, page.value)
+const { data, isLoading, refetch } = useGroupQuery(search, page)
 
 
 const groups = computed(() => (data.value?.data || []) as GroupWithRole[])

@@ -3,13 +3,14 @@ import { UserRepository } from '@/lib/repsitories/User'
 import { RoleRepository } from '@/lib/repsitories/Role'
 import type { UserRequest } from '@/types/user'
 import type { ApiError } from '@/lib/api/helpers/ApiError'
+import type { Ref } from 'vue'
 
 
 
-export function useUserQuery(search: string) {
+export function useUserQuery(search: Ref<string>) {
   return useQuery({
     queryKey: ['users', search],
-    queryFn: () => UserRepository.getUsers(search),
+    queryFn: () => UserRepository.getUsers(search.value),
   })
 }
 

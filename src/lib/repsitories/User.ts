@@ -2,16 +2,16 @@ import { endpoints } from '@/lib/endpoints'
 import Api from '@/lib/api/base'
 import type { User } from '@/types/User/index'
 import type { Response, Meta } from '@/types'
-
-interface UserRequest {
-    id?: number
-    name: string
-    username: string
-    email: string
-    password: string
-    password_confirmation: string
-    role: string
-}
+import type { UserRequest } from '@/types/user'
+// interface UserRequest {
+//     id?: number
+//     name: string
+//     username: string
+//     email: string
+//     password: string
+//     password_confirmation: string
+//     role: string
+// }
 
 export const UserRepository = {
     getUsers: async (search?: string) => {

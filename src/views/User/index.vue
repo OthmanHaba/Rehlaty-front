@@ -8,9 +8,8 @@ import FormInput from '@/components/Shared/From/FormInput.vue'
 import DropDown from '@/components/Shared/DropDown.vue'
 import { useValidationStore } from '@/composables/useValidationErrors'
 import { useUserQuery, useUserMutation, useRoleQuery} from '@/lib/queries/user'
-//import type { UserRequest } from '@/types/UserRequest'
 import type { UserRequest } from '@/types/user'
-import type { User } from '@/types/User'
+import type { User } from '@/types/User/index'
 import { useToast } from '@/composables/useToast'
 import type { ApiError } from '@/lib/api/helpers/ApiError'
 import Pagination from '@/components/Shared/Pagination.vue'
@@ -26,7 +25,7 @@ interface DropdownItem {
 
 const search = ref<string>('')
 
-const { data, isLoading, refetch } = useUserQuery(search.value)
+const { data, isLoading, refetch } = useUserQuery(search)
 
 const mutate = useUserMutation(
     () => {

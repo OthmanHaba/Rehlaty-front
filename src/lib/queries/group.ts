@@ -4,15 +4,16 @@ import type { Group } from '@/types'
 import Api from '@/lib/api/base.ts'
 import endpoints from '@/lib/endpoints'
 import type { ApiError } from '@/lib/api/helpers/ApiError'
+import type { Ref } from 'vue'
 
-export function useGroupQuery(search: string, page: number) {
+export function useGroupQuery(search: Ref<string>, page: Ref<number>) {
   return useQuery({
     queryKey: ['groups', search, page],
     queryFn: () =>
       GroupRepository.fetchAll({
-        search,
+        search: search.value,
         per_page: 10,
-        page
+        page: page.value,
       })
   })
 }
