@@ -3,11 +3,8 @@ import FormWrapper from '@/components/Shared/From/FormWrapper.vue'
 import FormInput from '@/components/Shared/From/FormInput.vue'
 import type { Group } from '@/types'
 import { ref, computed } from 'vue'
-import { useMutation } from '@tanstack/vue-query'
+import { useCreateGroupMutation } from '@/lib/queries/group'
 import { useRouter } from 'vue-router'
-import Api from '@/lib/api/base.ts'
-import endpoints from '@/lib/endpoints'
-import type { ApiError } from '@/lib/api/helpers/ApiError'
 import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
@@ -20,18 +17,10 @@ const form = ref<Group>({
 const { error } = useToast();
 
 // Since GroupRepository doesn't have a create method, we'll implement it directly
-const createGroupMutation = useMutation({
-    mutationFn: (groupData: Group) => {
-        // Use the API directly since GroupRepository doesn't have a create method
-        return Api.post(endpoints.GROUPS(), groupData)
-    },
-    onSuccess: () => {
-        router.push('/groups')
-    },
-    onError: (_error: ApiError) => {
-        error(_error.message)
-    }
-})
+const createGroupMutation = useCreateGroupMutation(
+  () => router.push('/groups'),
+  (_error) => error(_error.message)
+)
 
 const isPending = computed(() => createGroupMutation.isPending.value)
 
