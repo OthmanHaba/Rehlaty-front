@@ -31,7 +31,7 @@ const {
       } = useRoleQuery(search)
 
 // Fetch permissions
-const { data: permissionsData } = usePermissionQuery()
+const { data: permissionsData } = usePermissionQuery({ enabled: true,  })
 
 const isCheckAll = ref<boolean>(false);
 
