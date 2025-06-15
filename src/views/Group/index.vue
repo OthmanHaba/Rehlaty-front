@@ -49,7 +49,7 @@ const search = ref<string>('')
 const { t } = useI18n()
 const page = ref(1)
 
-const { data, isLoading, refetch } = useGroupQuery(search, page)
+const { data, isLoading, refetch } = useGroupQuery(search, page, { enabled: true, })
 
 
 const groups = computed(() => (data.value?.data || []) as GroupWithRole[])

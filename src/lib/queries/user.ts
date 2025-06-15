@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/vue-query'
+import { useQuery, useMutation, queryOptions } from '@tanstack/vue-query'
 import { UserRepository } from '@/lib/repsitories/User'
 import { RoleRepository } from '@/lib/repsitories/Role'
 import type { UserRequest } from '@/types/user'
@@ -7,11 +7,12 @@ import type { Ref } from 'vue'
 
 
 
-export function useUserQuery(search: Ref<string>) {
-  return useQuery({
+export function useUserQuery(search: Ref<string>, options = {}) {
+  return useQuery(queryOptions({
     queryKey: ['users', search],
     queryFn: () => UserRepository.getUsers(search.value),
-  })
+    ...options,
+  }))
 }
 
 export function useUserMutation(onSuccess: () => void, onError: (error: ApiError) => void)
@@ -30,9 +31,10 @@ export function useUserMutation(onSuccess: () => void, onError: (error: ApiError
   })
 }
 
-export function useRoleQuery(search: Ref<string>) {
-  return useQuery({
+export function useRoleQuery(search?: Ref<string>,options = {}) {
+  return useQuery(queryOptions({
     queryKey: ['roles', search],
-    queryFn: () => RoleRepository.getRoles(search.value),
-  })
+    queryFn: () => RoleRepository.getRoles(search?.value),
+    ...options,
+  }))
 }

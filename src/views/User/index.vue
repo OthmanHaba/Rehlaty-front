@@ -25,7 +25,7 @@ interface DropdownItem {
 
 const search = ref<string>('')
 
-const { data, isLoading, refetch } = useUserQuery(search)
+const { data, isLoading, refetch } = useUserQuery(search,{ enabled: true,  })
 
 const mutate = useUserMutation(
     () => {
@@ -39,7 +39,7 @@ const mutate = useUserMutation(
 
 const page = ref(1);
 
-const rolesRep = useRoleQuery()
+const rolesRep = useRoleQuery(undefined ,{ enabled: true,  })
 
 
 const validationErrors = useValidationStore()

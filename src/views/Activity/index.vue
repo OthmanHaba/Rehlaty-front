@@ -5,7 +5,7 @@ import { useActivityQuery } from '@/lib/queries/activity'
 
 const search = ref<string>('')
 
-const { data, isLoading, error, refetch } = useActivityQuery(search)
+const { data, isLoading, error, refetch } = useActivityQuery(search ,{ enabled: true,  })
 
 const activities = computed(() => data.value?.data || [])
 const columns = computed(() => data.value?.meta?.columns || [])
