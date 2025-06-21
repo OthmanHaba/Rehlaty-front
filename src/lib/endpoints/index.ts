@@ -10,6 +10,9 @@ export const endpoints = {
     ACTIVITIES: () => '/activities',
     GROUPS: () => '/groups',
     GROUP: (id: string | number) => `/groups/${id}`,
+    CUSTOMERS: () => '/customers',
+    CUSTOMER: (id: string | number) => `/customers/${id}`,
+    CUSTOMER_CREATE: () => '/customer/create',
 } as const
 
 export default endpoints

@@ -13,7 +13,7 @@ const router = createRouter({
         {
             path: '/',
             meta: {
-                requiresAuth: true,
+                requiresAuth: false,
             },
             component: () => import('@/layouts/AuthLayout.vue'),
             children: [
@@ -40,7 +40,15 @@ const router = createRouter({
                 {
                     path: 'groups/create',
                     component: () => import('@/views/Group/create.vue'),
-                }
+                },
+                {
+                    path: 'customers',
+                    component: () => import('@/views/Customer/index.vue'),
+                },
+                {
+                    path: 'customers/create',
+                    component: () => import('@/views/Customer/create.vue'),
+                },
             ],
         },
     ],

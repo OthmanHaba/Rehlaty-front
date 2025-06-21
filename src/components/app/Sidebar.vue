@@ -35,6 +35,12 @@ const pages: Page[] = [
         title: t('app.pages.groups'),
     },
     {
+        icon: 'mdi:account-group',
+        name: 'Customers',
+        link: '/customers',
+        title: t('app.pages.customers'),
+    },
+    {
         icon: 'mdi:shield',
         name: 'Roles',
         link: '/roles',
