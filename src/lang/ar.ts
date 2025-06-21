@@ -12,6 +12,8 @@ export default {
             groups: 'المجموعات',
             create: 'اضافة',
             edit: 'تعديل',
+            customers: 'العملاء',
+            title: 'صفحة {title}',
         },
         error: {
             server_error: 'حدث خطآ في الخادم',
@@ -50,6 +52,8 @@ export default {
         activities: 'سجل الانشطة',
         error_occurred: 'حدث خطأ',
         try_again: 'حاول مرة أخرى',
+        description: 'هنا يمكنك إدارة {description}',
+
     },
     role: {
         name: 'اسم الصلاحية',
@@ -73,4 +77,14 @@ export default {
         previous: 'السابق',
         next: 'التالي',
     },
+    customer: {
+        add: 'إضافة عميل',
+        name: 'اسم العميل',
+        phone: 'رقم الهاتف',
+        gender: 'الجنس',
+        male: 'ذكر',
+        female: 'أنثى',
+        passportNumber: 'رقم الجواز',
+        passportImage: 'صورة الجواز',
+    }
 }

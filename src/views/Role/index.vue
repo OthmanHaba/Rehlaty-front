@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { RoleRepository } from '@/lib/repsitories/Role';
 import { ref, computed } from 'vue';
 import Button from '@/components/Shared/Button.vue';
 import Modal from '@/components/Shared/Modal.vue';
@@ -7,8 +6,9 @@ import FormWrapper from '@/components/Shared/From/FormWrapper.vue';
 import FormInput from '@/components/Shared/From/FormInput.vue';
 import DataTable from '@/components/Shared/DataTable.vue';
 import CheckBox from '@/components/Shared/CheckBox.vue';
-import type { Role } from '@/types/User';
-import { useQuery, useMutation } from '@tanstack/vue-query';
+import type { Role } from '@/types/User/index';
+import { usePermissionQuery, useRoleMutation } from '@/lib/queries/role'
+import { useRoleQuery} from '@/lib/queries/user'
 import { useToast } from '@/composables/useToast';
 import type { ApiError } from '@/lib/api/helpers/ApiError';
 
@@ -28,43 +28,22 @@ const {
     data: rolesData,
     isLoading: isRolesLoading,
     refetch: refetchRoles
-} = useQuery({
-    queryKey: ['roles', search],
-    queryFn: () => RoleRepository.getRoles(search.value)
-});
+      } = useRoleQuery(search)
 
 // Fetch permissions
-const { data: permissionsData } = useQuery({
-    queryKey: ['permissions'],
-    queryFn: () => RoleRepository.getPermissions()
-});
+const { data: permissionsData } = usePermissionQuery({ enabled: true,  })
 
 const isCheckAll = ref<boolean>(false);
 
-// Create or update role mutation
-const roleMutation = useMutation({
-    mutationFn: (roleData: Role) => {
-        if (roleData.id) {
-            return RoleRepository.updateRole({
-                id: roleData.id,
-                name: roleData.name,
-                permissions: roleData.permissions?.map((p) => p.id) || []
-            });
-        } else {
-            return RoleRepository.createRole({
-                name: roleData.name,
-                permissions: roleData.permissions?.map((p) => p.id) || []
-            });
-        }
+const roleMutation = useRoleMutation(
+    () => {
+        isModalOpen.value = false
+        refetchRoles()
     },
-    onSuccess: () => {
-        isModalOpen.value = false;
-        refetchRoles();
-    },
-    onError: (_error: ApiError) => {
+    (_error: ApiError) => {
         error(_error.message ?? 'Failed to create role')
     }
-});
+)
 
 const roles = computed(() => rolesData.value?.data || []);
 const columns = computed(() => rolesData.value?.meta?.columns || []);

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import DataTable from '@/components/Shared/DataTable.vue'
 import { ref, computed } from 'vue'
-import { GroupRepository } from '@/lib/repsitories/Group'
 import Button from '@/components/Shared/Button.vue'
 import { useI18n } from 'vue-i18n'
-import { useQuery } from '@tanstack/vue-query'
+import { useGroupQuery } from '@/lib/queries/group'
 import Pagination from '@/components/Shared/Pagination.vue'
-import type { Role } from '@/types/User'
+import type { Role } from '@/types/User/index'
 import type { Meta } from '@/types'
 
 // Define interface for extended Group with role
@@ -49,14 +48,9 @@ interface LaravelPaginationData {
 const search = ref<string>('')
 const { t } = useI18n()
 const page = ref(1)
-const { data, isLoading, refetch } = useQuery({
-    queryKey: ['groups', search],
-    queryFn: () => GroupRepository.fetchAll({
-        search: search.value,
-        per_page: 10,
-        page: page.value
-    })
-})
+
+const { data, isLoading, refetch } = useGroupQuery(search, page, { enabled: true, })
+
 
 const groups = computed(() => (data.value?.data || []) as GroupWithRole[])
 const columns = computed(() => data.value?.meta?.columns || [])

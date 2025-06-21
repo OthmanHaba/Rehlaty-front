@@ -1,7 +1,7 @@
 import { endpoints } from '@/lib/endpoints'
 import Api from '@/lib/api/base'
 import type { Meta, Response } from '@/types'
-import type { Permission, Role } from '@/types/User'
+import type { Permission, Role } from '@/types/User/index'
 
 export const RoleRepository = {
     getRoles: async (search: string | null = null) => {
